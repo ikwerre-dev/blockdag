@@ -26,16 +26,10 @@ export const db = {
   },
 }
 
-// Prisma client for SQLite usage (Next.js hot-reload safe)
+// Prisma client (require Postgres via DATABASE_URL)
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient }
 
-// Prefer env DATABASE_URL, fallback to local dev db path
-const envUrl = process.env.DATABASE_URL
-const prismaDatasourceUrl = envUrl?.startsWith('file:')
-  ? `file:${path.resolve(process.cwd(), envUrl.replace('file:', ''))}`
-  : envUrl || `file:${path.resolve(process.cwd(), 'prisma/dev.db')}`
-
 export const prisma =
-  globalForPrisma.prisma || new PrismaClient({ datasources: { db: { url: prismaDatasourceUrl } } })
+  globalForPrisma.prisma || new PrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
