@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import Image from "next/image";
 import IncrementCardView from "@/components/IncrementCardView";
+import EmergencyMode from "@/components/EmergencyMode";
 
 export default async function PublicProfile({ params }: { params: { id: string } }) {
   const user = await prisma.user.findUnique({
@@ -27,16 +28,17 @@ export default async function PublicProfile({ params }: { params: { id: string }
   const visible = (user.card?.visibleFields as any) || {};
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://VelTrust.com";
   const profileUrl = `${baseUrl}/view/${user.id}`;
+  const initials = (((user.firstName ?? '').charAt(0)) + ((user.lastName ?? '').charAt(0))).toUpperCase() || 'V';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       <IncrementCardView userId={user.id} />
-      <div className="max-w-3xl mx-auto px-4 py-10">
-        {/* Card header styled like dashboard with blue bg and doodle */}
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-          <div className="flex items-center justify-center p-6">
-            <div className="relative" style={{ width: 340, height: 214 }}>
-              <div className="absolute inset-0 rounded-xl" style={{ backgroundColor: color }}></div>
+
+      {/* Hero header with blue background and doodle overlay */}
+      <div className="relative isolate">
+        <div className="bg-[#194dbe] text-white">
+          <div className="max-w-5xl mx-auto px-4 py-10 md:py-12">
+            <div className="relative overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-lg">
               <Image
                 src={'/doodle.png'}
                 fill
@@ -44,61 +46,100 @@ export default async function PublicProfile({ params }: { params: { id: string }
                 draggable={false}
                 priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="z-0 absolute opacity-5 object-cover rounded-xl"
+                className="absolute inset-0 z-0 opacity-15 object-cover"
               />
-              {/* Top-right transparent logo */}
-              <Image src="/logo-transparent.png" alt="logo" width={60} height={20} className="absolute top-3 right-3 z-10 opacity-90" />
 
-              <div className="absolute inset-0 p-4 text-white z-10 flex flex-col justify-between">
-                <div>
-                  <div className="text-xl font-bold">{visible.name !== false ? `${user.firstName ?? ''} ${user.lastName ?? ''}` : 'Hidden Name'}</div>
-                  <div className="text-xs opacity-80">@{user.handle}</div>
-                  {visible.email !== false && <div className="text-xs mt-2 opacity-90">{user.email || ''}</div>}
-                  <div className="text-xs mt-2">{text}</div>
+              <div className="relative z-10 p-6 md:p-8">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center font-semibold">
+                      {initials}
+                    </div>
+                    <div>
+                      <div className="text-lg md:text-xl font-semibold">
+                        {visible.name !== false ? `${user.firstName ?? ''} ${user.lastName ?? ''}` : 'Hidden Name'}
+                      </div>
+                      <div className="text-xs opacity-80">@{user.handle}</div>
+                    </div>
+                  </div>
+
+                  <Image src="/logo-transparent.png" alt="logo" width={80} height={26} className="opacity-90" />
                 </div>
-                <div className="flex items-center justify-between text-xs opacity-90">
-                  <span>Encrypted</span>
-                  <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(profileUrl)}`}
-                    alt="Profile QR"
-                    className="rounded"
-                    style={{ width: 48, height: 48 }}
-                  />
+
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-[1fr,auto] gap-6 items-center">
+                  <div className="text-sm opacity-90">
+                    {visible.email !== false && <div className="">{user.email || ''}</div>}
+                    <div className="mt-1">{text}</div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(profileUrl)}`}
+                      alt="Profile QR"
+                      className="rounded-lg shadow-sm"
+                      style={{ width: 72, height: 72 }}
+                    />
+                    <div className="text-xs opacity-90">Encrypted</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <h2 className="text-lg font-semibold">Medical Details</h2>
-            <div className="mt-4 space-y-2 text-sm text-gray-700">
-              {visible.bloodType !== false && (
-                <div>Blood Type: {user.bloodType || 'N/A'}</div>
-              )}
-              {visible.phone !== false && (
-                <div>Phone: {user.phone || 'N/A'}</div>
-              )}
-              {visible.email !== false && (
-                <div>Email: {user.email || 'N/A'}</div>
-              )}
-              {visible.address !== false && (
-                <div>Location: {[user.city, user.region, user.country].filter(Boolean).join(', ') || 'N/A'}</div>
-              )}
+        {/* Content cards */}
+        <div className="max-w-5xl mx-auto px-4 -mt-6 md:-mt-8 pb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <h2 className="text-base font-semibold text-slate-900">Medical Details</h2>
+              <div className="mt-4 space-y-3 text-sm text-slate-700">
+                {visible.bloodType !== false && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Blood Type</span>
+                    <span className="font-medium">{user.bloodType || 'N/A'}</span>
+                  </div>
+                )}
+                {visible.phone !== false && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Phone</span>
+                    <span className="font-medium">{user.phone || 'N/A'}</span>
+                  </div>
+                )}
+                {visible.email !== false && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Email</span>
+                    <span className="font-medium">{user.email || 'N/A'}</span>
+                  </div>
+                )}
+                {visible.address !== false && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500">Location</span>
+                    <span className="font-medium">{[user.city, user.region, user.country].filter(Boolean).join(', ') || 'N/A'}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-100">
+              <h2 className="text-base font-semibold text-slate-900">Recent Records</h2>
+              <div className="mt-4 space-y-3">
+                {user.records.length === 0 && (
+                  <div className="text-sm text-slate-600">No records yet.</div>
+                )}
+                {user.records.map((r) => (
+                  <div key={r.id} className="border border-slate-200 rounded-lg p-3 hover:bg-slate-50 transition-colors">
+                    <div className="font-medium text-slate-900">{r.title}</div>
+                    {r.description && (
+                      <div className="text-sm text-slate-600 mt-1">{r.description}</div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-6 shadow-sm">
-            <h2 className="text-lg font-semibold">Recent Records</h2>
-            <div className="mt-4 space-y-3">
-              {user.records.length === 0 && <div className="text-sm text-gray-600">No records yet.</div>}
-              {user.records.map((r) => (
-                <div key={r.id} className="border rounded-lg p-3">
-                  <div className="font-medium">{r.title}</div>
-                  {r.description && <div className="text-sm text-gray-600 mt-1">{r.description}</div>}
-                </div>
-              ))}
-            </div>
+
+          {/* Emergency Mode toggle and panel */}
+          <div className="mt-8">
+            <EmergencyMode />
           </div>
         </div>
       </div>
