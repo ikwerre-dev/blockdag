@@ -41,6 +41,18 @@ model User {
   card       MedicalCard?
   doctors    Doctor[]
   appointments Appointment[]
+  insurances Insurance[]
+}
+
+enum MedicalRecordType {
+  ILLNESS
+  ALLERGY
+  MEDICATION
+  TEST_RESULT
+  PROCEDURE
+  IMMUNIZATION
+  NOTE
+  OTHER
 }
 
 model MedicalRecord {
@@ -48,11 +60,27 @@ model MedicalRecord {
   userId     String
   title      String
   description String?
+  type       MedicalRecordType @default(OTHER)
+  warningNotes String?
   data       String
   hash       String   // optional onchain hash reference
   createdAt  DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Insurance {
+  id        String   @id @default(cuid())
+  userId    String
+  provider  String
+  policyNumber String?
+  coverage  String?
+  phone     String?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
