@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import Image from "next/image";
+import IncrementCardView from "@/components/IncrementCardView";
 
 export default async function PublicProfile({ params }: { params: { id: string } }) {
   const user = await prisma.user.findUnique({
@@ -24,26 +25,47 @@ export default async function PublicProfile({ params }: { params: { id: string }
   const color = user.card?.color || "#194dbe";
   const text = user.card?.text || "";
   const visible = (user.card?.visibleFields as any) || {};
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://VelTrust.com";
+  const profileUrl = `${baseUrl}/view/${user.id}`;
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <IncrementCardView userId={user.id} />
       <div className="max-w-3xl mx-auto px-4 py-10">
-        <div className="relative overflow-hidden rounded-2xl bg-white shadow-sm">
-          <div className="absolute right-0 top-0 opacity-20 pointer-events-none">
-            <Image src="/images/doodle.png" width={220} height={220} alt="doodle" />
-          </div>
-          <div className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="h-16 w-16 rounded-full" style={{ backgroundColor: color }}></div>
-              <div>
-                <div className="text-2xl font-bold">
-                  {visible.name !== false ? `${user.firstName ?? ''} ${user.lastName ?? ''}` : 'Hidden Name'}
+        {/* Card header styled like dashboard with blue bg and doodle */}
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="flex items-center justify-center p-6">
+            <div className="relative" style={{ width: 340, height: 214 }}>
+              <div className="absolute inset-0 rounded-xl" style={{ backgroundColor: color }}></div>
+              <Image
+                src={'/doodle.png'}
+                fill
+                alt="doodle"
+                draggable={false}
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="z-0 absolute opacity-5 object-cover rounded-xl"
+              />
+              {/* Top-right transparent logo */}
+              <Image src="/logo-transparent.png" alt="logo" width={60} height={20} className="absolute top-3 right-3 z-10 opacity-90" />
+
+              <div className="absolute inset-0 p-4 text-white z-10 flex flex-col justify-between">
+                <div>
+                  <div className="text-xl font-bold">{visible.name !== false ? `${user.firstName ?? ''} ${user.lastName ?? ''}` : 'Hidden Name'}</div>
+                  <div className="text-xs opacity-80">@{user.handle}</div>
+                  {visible.email !== false && <div className="text-xs mt-2 opacity-90">{user.email || ''}</div>}
+                  <div className="text-xs mt-2">{text}</div>
                 </div>
-                <div className="text-sm text-gray-600">@{user.handle}</div>
+                <div className="flex items-center justify-between text-xs opacity-90">
+                  <span>Encrypted</span>
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(profileUrl)}`}
+                    alt="Profile QR"
+                    className="rounded"
+                    style={{ width: 48, height: 48 }}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="mt-4 text-sm text-gray-700">
-              {text}
             </div>
           </div>
         </div>

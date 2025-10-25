@@ -3,7 +3,6 @@ import type { Viewport } from "next";
 import { Toaster } from 'sonner';
 import "./globals.css";
 import { Inter, Montserrat } from 'next/font/google'
-import TawkToMessenger from "@/components/TawkToMessenger";
 import { Providers } from './providers'
 
 const montserrat = Montserrat({

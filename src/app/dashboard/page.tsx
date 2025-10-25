@@ -1,12 +1,31 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useUserData } from "@/hooks/useUserData";
 import timeAgo from "@/helpers/timeAgo";
 import { FileText, User, Shield, ChevronRight, CreditCard } from "lucide-react";
+import ScansChart from "@/components/ScansChart";
 
 export default function Dashboard() {
   const { userData, records, loading, error, reload } = useUserData();
+  const [viewsCount, setViewsCount] = useState<number>(0);
+  const [viewsByDay, setViewsByDay] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const fetchViews = async () => {
+      if (!userData?.id) return;
+      try {
+        const res = await fetch(`/api/card?userId=${userData.id}`);
+        const data = await res.json();
+        const card = data.card || {};
+        setViewsCount(card.viewsCount || 0);
+        setViewsByDay(card.viewsByDay || {});
+      } catch {}
+    };
+    fetchViews();
+  }, [userData?.id]);
 
   if (loading) {
     return (
@@ -41,26 +60,46 @@ export default function Dashboard() {
   const recordsCount = records?.length || 0;
   const appointmentsCount = 0; // Placeholder until appointments data exists
 
+  // moved viewsCount and viewsByDay hooks to the top-level before conditional returns
+
   return (
     <DashboardLayout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left column */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Welcome card with doodle */}
-          <div className="relative overflow-hidden bg-white rounded-xl shadow-sm p-6">
-            <div className="absolute -right-12 -top-12 h-40 w-40 bg-[#194dbe]/10 rounded-full" />
-            <div className="absolute -right-24 top-8 h-24 w-24 bg-[#3a6ad4]/10 rounded-full" />
-            <h2 className="text-lg font-medium text-gray-800">Hello, {fullName}</h2>
-            <p className="text-sm text-gray-600 mt-1">Manage your medical records, appointments, providers, and insurance from one place.</p>
-            {/* Stats grid inspired by doodle design */}
-            <div className="mt-6 grid grid-cols-2 gap-4">
-              <div className="rounded-lg border bg-gray-50 p-4">
-                <div className="text-xs text-gray-500">Records Updated</div>
-                <div className="mt-1 text-2xl font-bold text-gray-800">{recordsCount}</div>
-              </div>
-              <div className="rounded-lg border bg-gray-50 p-4">
-                <div className="text-xs text-gray-500">Appointments</div>
-                <div className="mt-1 text-2xl font-bold text-gray-800">{appointmentsCount}</div>
+       
+
+          {/* Scans chart with doodle background */}
+          <div className="relative overflow-hidden rounded-xl shadow-sm p-6">
+            <div className="absolute inset-0 rounded-xl" style={{ backgroundColor: '#194dbe' }}></div>
+            <Image
+              src={'/doodle.png'}
+              fill
+              alt="doodle"
+              draggable={false}
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="z-0 absolute opacity-5 object-cover rounded-xl"
+            />
+            <Image src="/logo-transparent.png" alt="logo" width={60} height={20} className="absolute top-3 right-3 z-10 opacity-90" />
+
+            <div className="relative z-10">
+              <h2 className="text-lg font-medium text-white">Hello, {fullName}</h2>
+              <p className="text-sm text-white/80 mt-1">Manage your medical records, appointments, providers, and insurance from one place.</p>
+              {/* Stats grid inspired by doodle design */}
+              <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="rounded-lg border border-white/20 bg-white/10 p-4">
+                  <div className="text-xs text-white/80">Records Updated</div>
+                  <div className="mt-1 text-2xl font-bold text-white">{recordsCount}</div>
+                </div>
+                <div className="rounded-lg border border-white/20 bg-white/10 p-4">
+                  <div className="text-xs text-white/80">Appointments</div>
+                  <div className="mt-1 text-2xl font-bold text-white">{appointmentsCount}</div>
+                </div>
+                <div className="rounded-lg border border-white/20 bg-white/10 p-4">
+                  <div className="text-xs text-white/80">Scanned Times</div>
+                  <div className="mt-1 text-2xl font-bold text-white">{viewsCount}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -129,6 +168,14 @@ export default function Dashboard() {
             </Link>
           </div>
 
+          {/* Scans chart */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-lg font-medium text-gray-800">Card Scans</h2>
+              <span className="text-xs text-gray-500">Last 7 days</span>
+            </div>
+            <ScansChart data={viewsByDay} />
+          </div>
           {/* Support card */}
           <div className="bg-gradient-to-r from-[#194dbe] to-[#3a6ad4] rounded-xl shadow-sm p-6 text-white">
             <h2 className="text-lg font-medium mb-2">Need Help?</h2>

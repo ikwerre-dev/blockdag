@@ -45,13 +45,18 @@ export default function Login() {
     }
   }
 
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       <div className="hidden md:flex md:w-1/2 bg-[#194dbe] relative">
         <div className="absolute inset-0 bg-[#194dbe] opacity-90"></div>
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white">
-          <Image src="/logo.png" alt="Bivo Health Logo" width={180} height={60} className="mb-12" />
-          <h1 className="text-3xl font-bold mb-6">Welcome Back!</h1>
+          <Image
+            src="logo.png"
+            alt="VelTrust Logo"
+            width={50}
+            height={40}
+          />          <h1 className="text-3xl font-bold mb-6">Welcome Back!</h1>
           <p className="text-xl mb-8 max-w-md text-center">Access your account to manage and share your health data securely.</p>
         </div>
       </div>

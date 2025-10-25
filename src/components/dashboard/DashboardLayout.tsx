@@ -15,9 +15,10 @@ import {
     Menu,
     X,
     Bell,
-
     ChevronDown,
     Loader2Icon,
+    FileText,
+    CreditCard,
 } from "lucide-react";
 import { useUserData } from '@/hooks/useUserData';
 import { useRouter } from 'next/navigation';
@@ -89,6 +90,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         { name: "Medical Card", href: "/dashboard/card", icon: Settings },
         { name: "Privacy", href: "/dashboard/privacy", icon: Settings },
         { name: "Profile", href: "/dashboard/profile", icon: User },
+        { name: "BlockDag", href: "/dashboard/blockdag", icon: Settings },
         { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
         { name: "Help & Support", href: "/dashboard/help", icon: HelpCircle },
     ];
@@ -268,8 +270,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                 <Image
                                     src="/logo.png"
                                     alt="VelTrust Logo"
-                                    width={120}
-                                    height={30}
+                                    width={96}
+                                    height={24}
                                 />
                             </div>
                         </div>
@@ -330,16 +332,35 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                     <div className="w-8 h-8 rounded-full bg-[#194dbe] flex items-center justify-center text-white">
                                         <span className="text-sm font-medium">{`${(user.first_name || '').toUpperCase().trim().slice(0, 1)}${(user.last_name || '').toUpperCase().trim().slice(0, 1)}` || 'U'}</span>
                                     </div>
+                                    {user.address && (
+                                        <span
+                                            className="hidden sm:inline-block text-xs text-gray-600 max-w-[140px] md:max-w-[200px] truncate"
+                                            title={user.address}
+                                        >
+                                            {user.address}
+                                        </span>
+                                    )}
                                 </button>
 
                                 {isProfileOpen && (
                                     <div
                                         id="profile-menu"
-                                        className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50"
+                                        className="absolute right-0 mt-2 bg-white rounded-lg shadow-lg py-1 z-50 min-w-[12rem] sm:min-w-[18rem] max-w-[90vw]"
                                     >
                                         <div className="px-4 py-2 border-b z-50 border-gray-100">
                                             <p className="text-sm font-medium text-gray-900">{user.first_name || 'User'}</p>
                                             <p className="text-sm text-gray-500 line-clamp-1">{user.email || ''}</p>
+                                            {user.address && (
+                                                <div className="mt-1">
+                                                    <span className="text-xs text-gray-500">Wallet:</span>
+                                                    <span
+                                                        className="ml-1 text-xs font-mono text-gray-700 block truncate max-w-[80vw] sm:max-w-[18rem]"
+                                                        title={user.address}
+                                                    >
+                                                        {user.address}
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="py-1 z-50 bg-white">
 
@@ -348,6 +369,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                                 className="block px-4 py-2 text-sm text-gray-700 z-50 hover:bg-gray-50"
                                             >
                                                 Profile Settings
+                                            </Link>
+                                            <Link
+                                                href="/dashboard/wallet"
+                                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                                            >
+                                                Wallet Details
                                             </Link>
                                             <button
                                                 onClick={handleLogout}
@@ -366,6 +393,31 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <main className="flex-1 overflow-y-auto p-6">
                     {children}
                 </main>
+                {/* Mobile bottom navigation */}
+                <nav className="lg:hidden fixed bottom-0 inset-x-0 bg-white border-t shadow-sm">
+                    <div className="grid grid-cols-5 text-xs">
+                        <Link href="/dashboard" className={`flex flex-col items-center py-2 ${isActive('/dashboard') ? 'text-[#194dbe]' : 'text-gray-600'}`}>
+                            <Home className="w-5 h-5" />
+                            <span>Home</span>
+                        </Link>
+                        <Link href="/dashboard/records" className={`flex flex-col items-center py-2 ${isActive('/dashboard/records') ? 'text-[#194dbe]' : 'text-gray-600'}`}>
+                            <FileText className="w-5 h-5" />
+                            <span>Records</span>
+                        </Link>
+                        <Link href="/dashboard/card" className={`flex flex-col items-center py-2 ${isActive('/dashboard/card') ? 'text-[#194dbe]' : 'text-gray-600'}`}>
+                            <CreditCard className="w-5 h-5" />
+                            <span>Card</span>
+                        </Link>
+                        <Link href="/dashboard/profile" className={`flex flex-col items-center py-2 ${isActive('/dashboard/profile') ? 'text-[#194dbe]' : 'text-gray-600'}`}>
+                            <User className="w-5 h-5" />
+                            <span>Profile</span>
+                        </Link>
+                        <Link href="/dashboard/blockdag" className={`flex flex-col items-center py-2 ${isActive('/dashboard/blockdag') ? 'text-[#194dbe]' : 'text-gray-600'}`}>
+                            <Settings className="w-5 h-5" />
+                            <span>BlockDag</span>
+                        </Link>
+                    </div>
+                </nav>
             </div>
         </div>
     );

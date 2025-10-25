@@ -27,7 +27,7 @@ const Navbar = () => {
                         <Link href="/login" className="text-[#000] hover:text-opacity-80 transition-all font-medium text-base">Login</Link>
                         <Link href="/register">
                             <button className="bg-[#194dbe] text-white px-7 py-3 rounded-full hover:bg-opacity-90 transition-all font-medium text-base">
-                                Get NFC Card
+                                Get started
                             </button>
                         </Link>
                     </div>
@@ -68,7 +68,7 @@ const Navbar = () => {
                             <Link href="/login" className="block px-3 py-2 text-[#000] hover:text-opacity-80 transition-all font-medium text-base">Login</Link>
                             <Link href="/register" className="block px-3 py-2">
                                 <button className="w-full bg-[#194dbe] text-white px-7 py-3 rounded-full hover:bg-opacity-90 transition-all font-medium text-base">
-                                    Get NFC Card
+                                    Get started
                                 </button>
                             </Link>
                         </div>

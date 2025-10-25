@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import Link from "next/link";
 import { useUserData } from "@/hooks/useUserData";
+import Image from "next/image";
 
 export default function MedicalCardPage() {
-  const { userData } = useUserData();
+  const { userData, records } = useUserData();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [color, setColor] = useState("#194dbe");
@@ -43,6 +44,9 @@ export default function MedicalCardPage() {
     }
   };
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://VelTrust.com";
+  const profileUrl = userData?.id ? `${baseUrl}/view/${userData.id}` : "";
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -66,38 +70,72 @@ export default function MedicalCardPage() {
                 </label>
                 <button onClick={save} className="px-4 py-2 bg-[#194dbe] text-white rounded-lg">Save</button>
               </div>
+
+              {/* Recent records under settings */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold mb-3">Recent Scans & Records</h3>
+                {records && records.length > 0 ? (
+                  <div className="space-y-2">
+                    {records.slice(0, 3).map(r => (
+                      <div key={r.id} className="border rounded-lg p-3">
+                        <div className="font-medium">{r.title}</div>
+                        {r.description && <div className="text-sm text-gray-600 mt-1">{r.description}</div>}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-600">No recent records.</div>
+                )}
+              </div>
             </div>
+
+            {/* Card preview */}
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="bg-[#194dbe] relative text-white p-6 py-[3rem]" style={{ backgroundColor: color }}>
-                <Image
-                  src={'/doodle.png'}
-                  fill
-                  alt="doodle"
-                  draggable={false}
-                  priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="z-0 absolute opacity-5 object-cover"
-                />
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg z-10 font-medium">Medical Card Preview</h2>
-                </div>
-                <div className="flex z-10 items-baseline flex-col">
-                  <div className="flex items-baseline">
-                    <span className="text-2xl z-10 font-bold">{userData?.first_name ?? ""} {userData?.last_name ?? ""}</span>
-                    <span className="ml-2 z-10 text-sm opacity-80">@{userData?.p2p_code || "handle"}</span>
-                  </div>
-                  <div className="flex items-baseline mt-2">
-                    <span className="text-sm z-10 opacity-90">{userData?.email || ""}</span>
-                    <span className="ml-2 z-10 text-xs opacity-80">Contact</span>
-                  </div>
-                  <div className="flex items-baseline mt-3">
-                    <span className="text-sm z-10">{text || "Customize your ICE or helpful note here"}</span>
+              <div className="flex items-center justify-center p-6">
+                <div className="relative" style={{ width: 340, height: 214 }}>
+                  {/* Blue header card area with doodle */}
+                  <div className="absolute inset-0 bg-[#194dbe] rounded-xl" style={{ backgroundColor: color }}></div>
+                  <Image
+                    src={'/doodle.png'}
+                    fill
+                    alt="doodle"
+                    draggable={false}
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="z-0 absolute opacity-5 object-cover rounded-xl"
+                  />
+                  {/* Top-right logo overlay */}
+                  <Image src="/logo-transparent.png" alt="logo" width={60} height={20} className="absolute top-3 right-3 z-10 opacity-90" />
+
+                  <div className="absolute inset-0 p-4 text-white z-10 flex flex-col justify-between">
+                    <div>
+                      <div className="text-xl font-bold">{userData?.first_name ?? ""} {userData?.last_name ?? ""}</div>
+                      <div className="text-xs opacity-80">@{userData?.p2p_code || "handle"}</div>
+                      <div className="text-xs mt-2 opacity-90">{userData?.email || ""}</div>
+                      <div className="text-xs mt-2">{text || "Customize your ICE or helpful note here"}</div>
+                    </div>
+                    <div className="flex items-center justify-between text-xs opacity-90">
+                      <span>Encrypted</span>
+                      {profileUrl && (
+                        <img
+                          src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(profileUrl)}`}
+                          alt="Profile QR"
+                          className="rounded"
+                          style={{ width: 48, height: 48 }}
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="p-4">
+              <div className="p-4 flex items-center justify-between">
                 {userData?.id && (
                   <Link href={`/view/${userData.id}`} className="inline-block text-[#194dbe] underline">Public card link</Link>
+                )}
+                {profileUrl && (
+                  <div className="flex items-center gap-2 text-xs text-gray-600">
+                    <span>Scan the QR to open</span>
+                  </div>
                 )}
               </div>
             </div>

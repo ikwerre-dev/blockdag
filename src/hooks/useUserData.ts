@@ -7,6 +7,7 @@ interface UserData {
     last_name?: string;
     email?: string;
     phone?: string;
+    address?: string;
     created_at?: string;
     updated_at?: string;
     last_login?: string;
@@ -93,6 +94,7 @@ export function useUserData() {
                 last_name: u.lastName ?? '',
                 email: u.email ?? '',
                 phone: u.phone ?? '',
+                address: u.address ?? '',
                 created_at: u.createdAt ?? new Date().toISOString(),
                 updated_at: new Date().toISOString(),
                 last_login: new Date().toISOString(),
