@@ -10,7 +10,8 @@ const publicPaths = [
   '/about',
   '/contact',
   '/features',
-  '/forgot-password'
+  '/forgot-password',
+  '/view'
 ];
 
 export async function middleware(request: NextRequest) {
@@ -18,7 +19,7 @@ export async function middleware(request: NextRequest) {
   
   // Check if the path is public
   const isPublicPath = publicPaths.some(publicPath => 
-    path === publicPath || path.startsWith('/api/auth/') || path.startsWith('/_next/') || path.startsWith('/images/')
+    path === publicPath || path.startsWith('/api/auth/') || path.startsWith('/_next/') || path.startsWith('/images/') || path.startsWith('/view/')
   );
 
   if (isPublicPath) {
