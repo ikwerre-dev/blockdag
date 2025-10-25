@@ -63,7 +63,7 @@ model MedicalRecord {
   type       MedicalRecordType @default(OTHER)
   warningNotes String?
   data       String
-  hash       String   // optional onchain hash reference
+  hash       String?  // optional onchain hash reference
   createdAt  DateTime @default(now())
 
   user       User     @relation(fields: [userId], references: [id])

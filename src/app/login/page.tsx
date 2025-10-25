@@ -52,7 +52,7 @@ export default function Login() {
         <div className="absolute inset-0 bg-[#194dbe] opacity-90"></div>
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white">
           <Image
-            src="logo.png"
+            src="/logo.png"
             alt="VelTrust Logo"
             width={50}
             height={40}
