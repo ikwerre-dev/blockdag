@@ -64,7 +64,7 @@ export default function Login() {
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8 md:hidden">
-            <Image src="/logo.png" alt="Bivo Health Logo" width={160} height={50} />
+            <img src="/logo.png" alt="Bivo Health Logo" width={160} height={50} />
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign in to your account</h2>

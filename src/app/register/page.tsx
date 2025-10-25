@@ -103,7 +103,7 @@ export default function Register() {
       <div className="hidden md:flex md:w-1/2 bg-[#194dbe] relative">
         <div className="absolute inset-0 bg-[#194dbe] opacity-90"></div>
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white">
-          <Image src="/logo.png" alt="Bivo Health Logo" width={180} height={60} className="mb-12" />
+          <img src="/logo.png" alt="Bivo Health Logo" width={180} height={60} className="mb-12" />
           <h1 className="text-3xl font-bold mb-6">Join Bivo Health</h1>
           <p className="text-xl mb-8 max-w-md text-center">
             Create your account to securely manage and share your health data.
@@ -114,7 +114,7 @@ export default function Register() {
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8 md:hidden">
-            <Image src="/logo.png" alt="Bivo Health Logo" width={160} height={50} />
+            <img src="/logo.png" alt="Bivo Health Logo" width={160} height={50} />
           </div>
 
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Create your account</h2>
