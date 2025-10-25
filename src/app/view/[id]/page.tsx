@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
-import Image from "next/image";
 import IncrementCardView from "@/components/IncrementCardView";
 import EmergencyMode from "@/components/EmergencyMode";
+import PublicRecordItem from "@/components/PublicRecordItem";
 
 export default async function PublicProfile({ params }: { params: { id: string } }) {
   const user = await prisma.user.findUnique({
@@ -39,12 +39,10 @@ export default async function PublicProfile({ params }: { params: { id: string }
         <div className="bg-[#194dbe] text-white">
           <div className="max-w-5xl mx-auto px-4 py-10 md:py-12">
             <div className="relative overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-lg">
-              <Image
+              <img
                 src={'/doodle.png'}
-                fill
                 alt="doodle"
                 draggable={false}
-                priority
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="absolute inset-0 z-0 opacity-15 object-cover"
               />
@@ -63,7 +61,7 @@ export default async function PublicProfile({ params }: { params: { id: string }
                     </div>
                   </div>
 
-                  <Image src="/logo-transparent.png" alt="logo" width={80} height={26} className="opacity-90" />
+                  <img src="/logo-transparent.png" alt="logo" width={80} height={26} className="opacity-90" />
                 </div>
 
                 <div className="mt-6 grid grid-cols-1 md:grid-cols-[1fr,auto] gap-6 items-center">
@@ -126,12 +124,7 @@ export default async function PublicProfile({ params }: { params: { id: string }
                   <div className="text-sm text-slate-600">No records yet.</div>
                 )}
                 {user.records.map((r) => (
-                  <div key={r.id} className="border border-slate-200 rounded-lg p-3 hover:bg-slate-50 transition-colors">
-                    <div className="font-medium text-slate-900">{r.title}</div>
-                    {r.description && (
-                      <div className="text-sm text-slate-600 mt-1">{r.description}</div>
-                    )}
-                  </div>
+                  <PublicRecordItem key={r.id} record={r} />
                 ))}
               </div>
             </div>
