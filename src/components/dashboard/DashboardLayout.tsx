@@ -80,7 +80,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             console.error('Logout error:', error);
         }
     };
- 
+
     const navItems = [
         { name: "Dashboard", href: "/dashboard", icon: Home },
         { name: "Medical Records", href: "/dashboard/records", icon: Settings },
@@ -270,8 +270,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                                 <Image
                                     src="/logo.png"
                                     alt="VelTrust Logo"
-                                    width={96}
-                                    height={24}
+                                    width={50}
+                                    height={40}
                                 />
                             </div>
                         </div>
