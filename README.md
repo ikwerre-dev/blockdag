@@ -1,5 +1,7 @@
 VelTrust Frontend
 
+**Pitch Deck:** https://www.canva.com/design/DAG2yUfbGyE/-KhxOWwR7Ov1WgDTLcZ81Q/edit?utm_content=DAG2yUfbGyE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
 Overview
 - Next.js 15 App Router frontend for VelTrust, featuring user dashboards, wallet-based login, and CRUD flows for medical records, doctors, appointments, and insurance.
 - Uses Prisma with SQLite for local development, optional MySQL for certain legacy/admin features, JWT cookies for API auth, React Query for client-side data flows, and Wagmi/Web3Modal for wallet connectivity.
