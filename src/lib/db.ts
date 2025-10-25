@@ -1,5 +1,7 @@
 import mysql from 'mysql2/promise'
 import { PrismaClient } from '../generated/prisma/client'
+import path from 'path'
+import fs from 'fs'
 
 // Create a connection pool
 const pool = mysql.createPool({
@@ -26,5 +28,14 @@ export const db = {
 
 // Prisma client for SQLite usage (Next.js hot-reload safe)
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient }
-export const prisma = globalForPrisma.prisma || new PrismaClient()
+
+// Prefer env DATABASE_URL, fallback to local dev db path
+const envUrl = process.env.DATABASE_URL
+const prismaDatasourceUrl = envUrl?.startsWith('file:')
+  ? `file:${path.resolve(process.cwd(), envUrl.replace('file:', ''))}`
+  : envUrl || `file:${path.resolve(process.cwd(), 'prisma/dev.db')}`
+
+export const prisma =
+  globalForPrisma.prisma || new PrismaClient({ datasources: { db: { url: prismaDatasourceUrl } } })
+
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma

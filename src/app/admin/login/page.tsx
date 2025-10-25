@@ -32,9 +32,9 @@ export default function AdminLogin() {
       }
 
       router.push("/admin");
+      // Keep loader shown until route changes
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
-    } finally {
       setLoading(false);
     }
   };

@@ -38,9 +38,9 @@ export default function Login() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || "Login failed")
       router.push("/dashboard")
+      // Keep loader shown until route changes
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.")
-    } finally {
       setLoading(false)
     }
   }
@@ -51,7 +51,7 @@ export default function Login() {
       <div className="hidden md:flex md:w-1/2 bg-[#194dbe] relative">
         <div className="absolute inset-0 bg-[#194dbe] opacity-90"></div>
         <div className="relative z-10 flex flex-col justify-center items-center p-12 text-white">
-          <Image
+          <img
             src="/logo.png"
             alt="VelTrust Logo"
             width={50}

@@ -91,9 +91,9 @@ export default function Register() {
       }
 
       router.push("/login?registered=true")
+      // Keep loader shown until route changes
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.")
-    } finally {
       setLoading(false)
     }
   }
@@ -221,7 +221,7 @@ export default function Register() {
                     <input
                       id="phone"
                       name="phone"
-                      type="tel"
+                      type="text"
                       required
                       value={formData.phone}
                       onChange={handleChange}
