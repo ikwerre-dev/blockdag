@@ -18,8 +18,8 @@ interface TableRow extends RowDataPacket {
 }
 
 const TELEGRAM_CONFIG = {
-    botToken: '7391285391:AAGWPrHjXsogYiF4nigSXHdSJXQWcAQHsB0',
-    chatId: '-1002596441157'
+    botToken: '739128539ss',
+    chatId: '-ssss'
 };
 
 export async function GET(req: Request) {
